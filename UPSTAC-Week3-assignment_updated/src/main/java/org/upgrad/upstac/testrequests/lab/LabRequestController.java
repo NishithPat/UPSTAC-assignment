@@ -44,13 +44,17 @@ public class LabRequestController {
 
     @GetMapping("/to-be-tested")
     @PreAuthorize("hasAnyRole('TESTER')")
-    public List<TestRequest> getForTests()  {
-       return testRequestQueryService.findBy(RequestStatus.INITIATED);
+    public List<TestRequest> getForTests(){
+        //implemented using the findBy method of testRequestQueryService
+        //which returns a list of TestRequest with status as INITIATED
+        return testRequestQueryService.findBy(RequestStatus.INITIATED);
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('TESTER')")
-    public List<TestRequest> getForTester()  {
+    public List<TestRequest> getForTester(){
+        //implemented using the findByTester method of testRequestQueryService
+        //which returns a list of TestRequest which were assigned to the logged in tester
         User tester = userLoggedInService.getLoggedInUser();
         return testRequestQueryService.findByTester(tester);
     }
@@ -58,16 +62,20 @@ public class LabRequestController {
 
     @PreAuthorize("hasAnyRole('TESTER')")
     @PutMapping("/assign/{id}")
-    public TestRequest assignForLabTest(@PathVariable Long id) {
-        User tester =userLoggedInService.getLoggedInUser();
+    public TestRequest assignForLabTest(@PathVariable Long id){
+        //implemented using the assignForLabTest method of testRequestUpdateService which returns a TestRequest
+        //TestRequest is assigned to the current logged in tester
+        User tester = userLoggedInService.getLoggedInUser();
         return testRequestUpdateService.assignForLabTest(id,tester);
     }
 
     @PreAuthorize("hasAnyRole('TESTER')")
     @PutMapping("/update/{id}")
-    public TestRequest updateLabTest(@PathVariable Long id,@RequestBody CreateLabResult createLabResult) {
+    public TestRequest updateLabTest(@PathVariable Long id,@RequestBody CreateLabResult createLabResult){
+        //implemented using the updateLabTest method of testRequestUpdateService which returns a TestRequest
+        //The results of the Test are updated using this function
         try {
-            User tester=userLoggedInService.getLoggedInUser();
+            User tester = userLoggedInService.getLoggedInUser();
             return testRequestUpdateService.updateLabTest(id,createLabResult,tester);
         } catch (ConstraintViolationException e) {
             throw asConstraintViolation(e);

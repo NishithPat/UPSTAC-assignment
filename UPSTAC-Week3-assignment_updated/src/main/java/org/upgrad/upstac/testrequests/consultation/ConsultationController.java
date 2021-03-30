@@ -44,23 +44,26 @@ public class ConsultationController {
 
     @GetMapping("/in-queue")
     @PreAuthorize("hasAnyRole('DOCTOR')")
-    public List<TestRequest> getForConsultations()  {
+    public List<TestRequest> getForConsultations(){
+        //implemented using the findBy method of testRequestQueryService
+        //which returns a list of TestRequest with status as LAB_TEST_COMPLETED
         return testRequestQueryService.findBy(RequestStatus.LAB_TEST_COMPLETED);
-
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('DOCTOR')")
-    public List<TestRequest> getForDoctor()  {
+    public List<TestRequest> getForDoctor(){
+        //implemented using the findByDoctor method of testRequestQueryService
+        //which returns a list of TestRequest which were assigned to the logged in doctor
         User doctor = userLoggedInService.getLoggedInUser();
         return testRequestQueryService.findByDoctor(doctor);
     }
 
-
-
     @PreAuthorize("hasAnyRole('DOCTOR')")
     @PutMapping("/assign/{id}")
-    public TestRequest assignForConsultation(@PathVariable Long id) {
+    public TestRequest assignForConsultation(@PathVariable Long id){
+        //implemented using the assignForConsultation method of testRequestUpdateService which returns a TestRequest
+        //TestRequest is assigned to the current logged in doctor
         try {
             User doctor = userLoggedInService.getLoggedInUser();
             return testRequestUpdateService.assignForConsultation(id, doctor);
@@ -69,11 +72,11 @@ public class ConsultationController {
         }
     }
 
-
-
     @PreAuthorize("hasAnyRole('DOCTOR')")
     @PutMapping("/update/{id}")
-    public TestRequest updateConsultation(@PathVariable Long id,@RequestBody CreateConsultationRequest testResult) {
+    public TestRequest updateConsultation(@PathVariable Long id,@RequestBody CreateConsultationRequest testResult){
+        //implemented using the updateConsultation method of testRequestUpdateService which returns a TestRequest
+        //consultations of the doctor are updated
         try {
             User doctor = userLoggedInService.getLoggedInUser();
             return testRequestUpdateService.updateConsultation(id, testResult, doctor);
